@@ -10,4 +10,6 @@ data class Cliente(
     val nome: String,
     val email: String,
     val endereco: String,
+    val preferencias: String,
+
 )
