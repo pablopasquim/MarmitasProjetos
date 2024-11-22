@@ -1,5 +1,6 @@
-package com.example.pabloapp
+package com.example.marmitasapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,30 +20,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppNavigation()
+            MainScreen { navigateToCadastroCliente() }
         }
+    }
+
+    private fun navigateToCadastroCliente() {
+        // Cria o Intent para navegar para CadastroClienteActivity
+        val intent = Intent(this, CadastroClienteActivity::class.java)
+        startActivity(intent) // Inicia a nova Activity
     }
 }
 
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = "mainScreen") {
-        composable("mainScreen") {
-            MainScreen(navController)
-        }
-        composable("listaMarmitas") {
-            ListaMarmitasScreen()
-        }
-        composable("historicoPedidos") {
-            HistoricoPedidosScreen()
-        }
-    }
-}
-
-@Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(onNavigateToCadastro: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,50 +42,23 @@ fun MainScreen(navController: NavHostController) {
     ) {
         Text(
             text = "Bem-vindo ao Sistema de Marmitas",
-            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         Button(
-            onClick = { navController.navigate("listaMarmitas") },
+            onClick = onNavigateToCadastro,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Lista de Marmitas")
+            Text("Cadastrar Cliente")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { navController.navigate("historicoPedidos") },
+            onClick = { /* Outras ações, como abrir lista de marmitas */ },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Histórico de Pedidos")
+            Text("Lista de Marmitas")
         }
-    }
-}
-
-@Composable
-fun ListaMarmitasScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Tela: Lista de Marmitas", style = MaterialTheme.typography.headlineSmall)
-    }
-}
-
-@Composable
-fun HistoricoPedidosScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Tela: Histórico de Pedidos", style = MaterialTheme.typography.headlineSmall)
     }
 }
