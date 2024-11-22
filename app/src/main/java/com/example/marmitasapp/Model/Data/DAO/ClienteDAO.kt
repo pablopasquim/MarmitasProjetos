@@ -24,4 +24,7 @@ interface ClienteDAO {
 
     @Query("SELECT * FROM clientes WHERE email LIKE :email")
     suspend fun buscarPorEmail(email: String): List<Cliente>
+
+    @Query("SELECT * FROM clientes")
+    suspend fun listarTodos(): List<Cliente>
 }

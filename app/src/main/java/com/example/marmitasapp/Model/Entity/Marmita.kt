@@ -6,11 +6,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "marmitas")
 data class Marmita(
 
-    @PrimaryKey(autoGenerate = true) val Id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nome: String,
     val descricao: String,
     val preco: Float,
+    val tipo: String,
     val ingredientes: String,
     val avaliacaoMedia: Float,
-    val tipo: String
+
 )
