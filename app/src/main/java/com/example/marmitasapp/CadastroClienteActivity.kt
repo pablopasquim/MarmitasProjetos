@@ -45,7 +45,7 @@ class CadastroClienteActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CadastroClienteScreen(viewModel = viewModel()) {
+            CadastroClienteScreen(viewModel = viewModel) {
                 finish()
             }
         }

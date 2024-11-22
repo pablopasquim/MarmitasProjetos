@@ -17,6 +17,7 @@
             android:exported="false"
             android:label="@string/title_activity_cadastro_cliente"
             android:theme="@style/Theme.Marmitasapp" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,10 +25,10 @@
             android:theme="@style/Theme.Marmitasapp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
