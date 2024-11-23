@@ -5,7 +5,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +16,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -23,9 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,7 +68,7 @@ class ClienteActivity : ComponentActivity() {
                 }
                 composable("cadastro") {
                     CadastrarClienteScreen(viewModel = viewModel) {
-                        navController.popBackStack() // Volta para o menu após o cadastro
+                        navController.popBackStack()
                     }
                 }
                 composable("listagem") {
@@ -105,7 +118,7 @@ fun ClientesMenu(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {  },
+            onClick = { navController.popBackStack() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Voltar ao Menu Principal")
@@ -194,7 +207,29 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
 
 @Composable
 fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavController) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Button(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier
+                .padding(start = 10.dp, top = 10.dp)
+                .wrapContentSize() // Button size adjusts to content
+                .clip(CircleShape)
+                .padding(5.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+        ) {
+            Text("<", style = MaterialTheme.typography.headlineMedium)
+        }
+
+    }
     val clientes = viewModel.listaClientes.value
+
 
     Column(
         modifier = Modifier
@@ -203,19 +238,41 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        Text("Clientes Cadastrados", modifier = Modifier.padding(bottom = 16.dp))
+
+        Spacer(modifier = Modifier.height(90.dp))
+        Box(modifier = Modifier.fillMaxWidth()) { // Wrap Text in a Box
+            Text(
+                "Clientes Cadastrados",
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .align(Alignment.Center),
+                style = TextStyle(fontSize = 30.sp)
+            )
+        }
 
         clientes.forEach { cliente ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(20.dp))
+                    .clip(RoundedCornerShape(20.dp)),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+
             ) {
                 Column {
-                    Text("Nome: ${cliente.nome}", modifier = Modifier.padding(bottom = 4.dp))
-                    Text("Email: ${cliente.email}", modifier = Modifier.padding(bottom = 4.dp))
+                    Text(
+                        cliente.nome,
+                        modifier = Modifier
+                            .padding(start = 16.dp, bottom = 4.dp),
+                        style = TextStyle(fontSize = 15.sp)
+                    )
                 }
 
                 Row(
+                    modifier = Modifier
+                        .padding(12.dp),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -224,29 +281,23 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
                             // Passando o nome do cliente para a tela de edição
                             navController.navigate("editarCliente/${cliente.nome}")
                         },
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+
                     ) {
                         Text("Editar")
                     }
                     Button(
                         onClick = {
                             viewModel.excluirCliente(cliente)
-                        }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
                     ) {
                         Text("Excluir")
                     }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Voltar ao Menu")
         }
     }
 }
@@ -322,10 +373,3 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
         }
     }
 }
-
-
-
-
-
-
-
