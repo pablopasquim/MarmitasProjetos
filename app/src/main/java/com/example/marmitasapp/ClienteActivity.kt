@@ -105,7 +105,7 @@ fun ClientesMenu(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { navController.popBackStack() },
+            onClick = {  },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Voltar ao Menu Principal")
