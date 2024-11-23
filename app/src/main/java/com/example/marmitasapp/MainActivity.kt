@@ -9,30 +9,23 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen { navigateToCadastroCliente() }
+            MainScreen()
         }
-    }
-
-    private fun navigateToCadastroCliente() {
-        // Cria o Intent para navegar para CadastroClienteActivity
-        val intent = Intent(this, CadastroClienteActivity::class.java)
-        startActivity(intent) // Inicia a nova Activity
     }
 }
 
 @Composable
-fun MainScreen(onNavigateToCadastro: () -> Unit) {
+fun MainScreen() {
+    // Usando LocalContext para acessar o contexto atual da aplicação
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,25 +33,16 @@ fun MainScreen(onNavigateToCadastro: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Bem-vindo ao Sistema de Marmitas",
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+        Text("Bem-vindo ao Sistema de Marmitas", modifier = Modifier.padding(bottom = 16.dp))
 
         Button(
-            onClick = onNavigateToCadastro,
+            onClick = {
+                val intent = Intent(context, ClienteActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cadastrar Cliente")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { /* Outras ações, como abrir lista de marmitas */ },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Lista de Marmitas")
+            Text("Gerenciar Clientes")
         }
     }
 }

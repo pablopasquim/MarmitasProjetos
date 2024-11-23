@@ -29,17 +29,17 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
     // Função para inserir um novo cliente
     fun inserirCliente(nome: String, email: String, endereco: String, preferencias: String): String {
         if (nome.isBlank() || email.isBlank()) {
-            return "Preencha todos os campos!" // Mensagem de erro caso os campos estejam vazios
+            return "Preencha todos os campos!"
         }
 
-        // Cria um novo cliente com o id = 0 (o Room vai gerar o id automaticamente)
+
         val cliente = Cliente(id = 0, nome = nome, email = email, endereco = endereco, preferencias = preferencias)
 
-        // Lança uma coroutine para inserir o cliente no banco de dados
+
         viewModelScope.launch {
-            clienteDao.inserir(cliente) // O Room vai gerar automaticamente o ID
-            carregarClientes() // Carrega novamente a lista de clientes após inserção
-            resultadoMensagem.value = "Cliente salvo com sucesso!" // Mensagem de sucesso
+            clienteDao.inserir(cliente)
+            carregarClientes()
+            resultadoMensagem.value = "Cliente salvo com sucesso!"
         }
 
         return "Cliente salvo com sucesso!"
@@ -50,19 +50,18 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
         viewModelScope.launch {
             clienteDao.deletar(cliente)
             carregarClientes()
-            resultadoMensagem.value = "Cliente excluído com sucesso!" // Mensagem de sucesso
+            resultadoMensagem.value = "Cliente excluído com sucesso!"
         }
     }
 
-    // Função para atualizar um cliente
-    fun atualizarCliente(id: Int, nome: String, email: String, endereco: String, preferencias: String): String {
+    fun atualizarCliente(id: Int, nome: String, email: String, endereco: String, preferencias: String) {
         if (nome.isBlank() || email.isBlank()) {
-            resultadoMensagem.value = "Preencha todos os campos!" // Mensagem de erro caso os campos estejam vazios
-            return ""
+            resultadoMensagem.value = "Preencha todos os campos!"
+            return
         }
 
         viewModelScope.launch {
-            val clienteExistente = clienteDao.buscarPorId(id) // Busca o cliente pelo id no banco
+            val clienteExistente = clienteDao.buscarPorId(id)
             if (clienteExistente != null) {
                 val clienteAtualizado = clienteExistente.copy(
                     nome = nome,
@@ -70,14 +69,20 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
                     endereco = endereco,
                     preferencias = preferencias
                 )
-                clienteDao.atualizar(clienteAtualizado) // Atualiza o cliente no banco
-                carregarClientes() // Recarrega a lista de clientes após atualização
-                resultadoMensagem.value = "Cliente atualizado com sucesso!" // Mensagem de sucesso
+                clienteDao.atualizar(clienteAtualizado)
+                carregarClientes() // Recarrega a lista após a atualização
+                resultadoMensagem.value = "Cliente atualizado com sucesso!"
             } else {
-                resultadoMensagem.value = "Erro ao atualizar cliente: Cliente não encontrado!" // Mensagem de erro
+                resultadoMensagem.value = "Erro ao atualizar cliente: Cliente não encontrado!"
             }
         }
+    }
 
-        return "Cliente atualizado com sucesso!"
+    fun buscarClientePorId(id: Int): Cliente? {
+        var cliente: Cliente? = null
+        viewModelScope.launch {
+            cliente = clienteDao.buscarPorId(id)
+        }
+        return cliente
     }
 }
