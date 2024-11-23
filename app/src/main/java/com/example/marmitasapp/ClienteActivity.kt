@@ -22,9 +22,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -133,7 +135,6 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var endereco by remember { mutableStateOf("") }
     var preferencias by remember { mutableStateOf("") }
-
     val resultadoMensagem = viewModel.resultadoMensagem.value
 
     Column(
@@ -205,8 +206,10 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavController) {
+    var searchEmail by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -215,21 +218,57 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        Button(
-            onClick = { navController.popBackStack() },
+        Row(
             modifier = Modifier
-                .padding(start = 10.dp, top = 10.dp)
-                .wrapContentSize() // Button size adjusts to content
-                .clip(CircleShape)
-                .padding(5.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 10.dp), // Add padding around the Row
+            horizontalArrangement = Arrangement.SpaceBetween, // Space elements apart
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("<", style = MaterialTheme.typography.headlineMedium)
-        }
+            Button(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 10.dp)
+                    .wrapContentSize() // Button size adjusts to content
+                    .clip(CircleShape)
+                    .padding(5.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+            ) {
+                Text("<", style = MaterialTheme.typography.headlineMedium)
+            }
 
+            TextField(
+                value = searchEmail,
+                onValueChange = { searchEmail = it },
+                label = { Text("Procurar usuário por nome") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+                textStyle = TextStyle(color = Color.Black),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.White,
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
     }
+
     val clientes = viewModel.listaClientes.value
 
+    // Filter the clientes based on the searchEmail (if it is not empty)
+    val filteredClientes = if (searchEmail.isEmpty()) {
+        clientes // If search is empty, show all clients
+    } else {
+        clientes.filter { cliente ->
+            cliente.email.contains(searchEmail, ignoreCase = true) // Filter by client name
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -238,7 +277,6 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-
         Spacer(modifier = Modifier.height(90.dp))
         Box(modifier = Modifier.fillMaxWidth()) { // Wrap Text in a Box
             Text(
@@ -250,7 +288,8 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
             )
         }
 
-        clientes.forEach { cliente ->
+        // Use filteredClientes to display the list of clients
+        filteredClientes.forEach { cliente ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -259,16 +298,25 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
                     .clip(RoundedCornerShape(20.dp)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
-                Column {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) { Column {
                     Text(
                         cliente.nome,
                         modifier = Modifier
                             .padding(start = 16.dp, bottom = 4.dp),
                         style = TextStyle(fontSize = 15.sp)
                     )
-                }
+                    Text(
+                        cliente.email,
+                        modifier = Modifier
+                            .padding(start = 16.dp, bottom = 4.dp),
+                        style = TextStyle(fontSize = 9.sp)
+                    )
+                } }
+
 
                 Row(
                     modifier = Modifier
@@ -283,7 +331,6 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
                         },
                         modifier = Modifier.padding(end = 8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-
                     ) {
                         Text("Editar")
                     }
