@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Marmitasapp</string>
     <string name="title_activity_cadastro_cliente">CadastroClienteActivity</string>
+    <string name="title_activity_marmita">MarmitaActivity</string>
 </resources>

@@ -12,6 +12,6 @@ data class Marmita(
     val preco: Float,
     val tipo: String,
     val ingredientes: String,
-    val avaliacaoMedia: Float,
+
 
 )

@@ -20,11 +20,11 @@ class MarmitaViewModel(private val marmitaDao: MarmitaDAO) : ViewModel() {
 
     private fun carregarMarmitas() {
         viewModelScope.launch {
-            listaMarmitas.value = marmitaDao.listarTodas() // Carrega todas as marmitas
+            listaMarmitas.value = marmitaDao.listarTodas()
         }
     }
 
-    // Função para salvar uma nova marmita
+
     fun salvarMarmita(nome: String, descricao: String, preco: Float, tipo: String, ingredientes: String, avaliacaoMedia: Float): String {
         if (nome.isBlank() || descricao.isBlank() || tipo.isBlank()) {
             return "Preencha todos os campos!"
@@ -36,28 +36,26 @@ class MarmitaViewModel(private val marmitaDao: MarmitaDAO) : ViewModel() {
             preco = preco,
             tipo = tipo,
             ingredientes = ingredientes,
-            avaliacaoMedia = avaliacaoMedia
+
         )
 
         viewModelScope.launch {
-            marmitaDao.inserir(marmita) // O Room vai gerar automaticamente o ID
-            carregarMarmitas() // Carrega novamente a lista de marmitas
-            resultadoMensagem.value = "Marmita salva com sucesso!" // Atualiza a mensagem de sucesso
+            marmitaDao.inserir(marmita)
+            carregarMarmitas()
+            resultadoMensagem.value = "Marmita salva com sucesso!"
         }
 
         return "Marmita salva com sucesso!"
     }
 
-    // Função para excluir uma marmita
     fun excluirMarmita(marmita: Marmita) {
         viewModelScope.launch {
             marmitaDao.deletar(marmita)
             carregarMarmitas()
-            resultadoMensagem.value = "Marmita excluída com sucesso!" // Atualiza a mensagem de sucesso
+            resultadoMensagem.value = "Marmita excluída com sucesso!"
         }
     }
 
-    // Função para atualizar uma marmita
     fun atualizarMarmita(id: Int, nome: String, descricao: String, preco: Float, tipo: String, ingredientes: String, avaliacaoMedia: Float): String {
         if (nome.isBlank() || descricao.isBlank() || tipo.isBlank()) {
             resultadoMensagem.value = "Preencha todos os campos!"
@@ -65,24 +63,27 @@ class MarmitaViewModel(private val marmitaDao: MarmitaDAO) : ViewModel() {
         }
 
         viewModelScope.launch {
-            val marmitaExistente = marmitaDao.buscarPorId(id) // Buscando a marmita pelo id no banco
+            val marmitaExistente = marmitaDao.buscarPorId(id)
             if (marmitaExistente != null) {
                 val marmitaAtualizada = marmitaExistente.copy(
                     nome = nome,
                     descricao = descricao,
                     preco = preco,
                     tipo = tipo,
-                    ingredientes = ingredientes, // Atualiza os ingredientes
-                    avaliacaoMedia = avaliacaoMedia // Atualiza a avaliação média
+                    ingredientes = ingredientes,
                 )
-                marmitaDao.atualizar(marmitaAtualizada) // Atualiza a marmita no banco
-                carregarMarmitas() // Carrega novamente a lista de marmitas
-                resultadoMensagem.value = "Marmita atualizada com sucesso!" // Atualiza a mensagem de sucesso
+                marmitaDao.atualizar(marmitaAtualizada)
+                carregarMarmitas()
+                resultadoMensagem.value = "Marmita atualizada com sucesso!"
             } else {
                 resultadoMensagem.value = "Erro ao atualizar marmita: Marmita não encontrada!"
             }
         }
 
         return "Marmita atualizada com sucesso!"
+    }
+
+    fun inserirMarmita(nome: Any, descricao: Any, preco: Any) {
+
     }
 }

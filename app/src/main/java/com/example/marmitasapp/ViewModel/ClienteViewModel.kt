@@ -26,7 +26,7 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
         }
     }
 
-    // Função para inserir um novo cliente
+
     fun inserirCliente(nome: String, email: String, endereco: String, preferencias: String): String {
         if (nome.isBlank() || email.isBlank()) {
             return "Preencha todos os campos!"
@@ -45,7 +45,7 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
         return "Cliente salvo com sucesso!"
     }
 
-    // Função para excluir um cliente
+
     fun excluirCliente(cliente: Cliente) {
         viewModelScope.launch {
             clienteDao.deletar(cliente)

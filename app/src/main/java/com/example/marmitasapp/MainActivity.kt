@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
@@ -23,7 +24,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-    // Usando LocalContext para acessar o contexto atual da aplicação
     val context = LocalContext.current
 
     Column(
@@ -35,14 +35,30 @@ fun MainScreen() {
     ) {
         Text("Bem-vindo ao Sistema de Marmitas", modifier = Modifier.padding(bottom = 16.dp))
 
+
         Button(
             onClick = {
                 val intent = Intent(context, ClienteActivity::class.java)
                 context.startActivity(intent)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
         ) {
-            Text("Gerenciar Clientes")
+            Text("Gerenciar Clientes", color = Color.White)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+        Button(
+            onClick = {
+                val intent = Intent(context, MarmitaActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+        ) {
+            Text("Gerenciar Marmitas", color = Color.White)
         }
     }
 }
