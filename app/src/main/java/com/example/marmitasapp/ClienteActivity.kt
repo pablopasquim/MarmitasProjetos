@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -128,14 +129,35 @@ fun ClientesMenu(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
-    // Lógica de cadastro de cliente
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var endereco by remember { mutableStateOf("") }
     var preferencias by remember { mutableStateOf("") }
     val resultadoMensagem = viewModel.resultadoMensagem.value
+
+
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            "Cadastrar Cliente",
+            modifier = Modifier
+                .padding(top = 155.dp, bottom = 16.dp)
+                .align(Alignment.Center),
+            style = TextStyle(fontSize = 30.sp)
+        )
+    }
+
+
+
+    LaunchedEffect(resultadoMensagem) {
+        if (resultadoMensagem == "Cliente salvo com sucesso!") {
+            onFinish()
+            viewModel.clearMensagem()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -148,7 +170,20 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
             value = nome,
             onValueChange = { nome = it },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -157,7 +192,20 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
             value = email,
             onValueChange = { email = it },
             label = { Text("E-mail") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -166,7 +214,20 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
             value = endereco,
             onValueChange = { endereco = it },
             label = { Text("Endereço") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -175,7 +236,20 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
             value = preferencias,
             onValueChange = { preferencias = it },
             label = { Text("Preferências Alimentares") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -183,10 +257,13 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
         Button(
             onClick = {
                 viewModel.inserirCliente(nome, email, endereco, preferencias)
-                if (resultadoMensagem == "Cliente salvo com sucesso!") {
-                }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, top = 10.dp)
+                .clip(CircleShape)
+                .padding(5.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ) {
             Text("Salvar Cliente")
         }
@@ -196,20 +273,18 @@ fun CadastrarClienteScreen(viewModel: ClienteViewModel, onFinish: () -> Unit) {
         if (resultadoMensagem.isNotBlank()) {
             Text(text = resultadoMensagem)
         }
-
-        Button(
-            onClick = onFinish,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Voltar ao Menu")
-        }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavController) {
     var searchEmail by remember { mutableStateOf("") }
+
+    val onFinish: () -> Unit = {
+        navController.popBackStack()
+    }
 
     Column(
         modifier = Modifier
@@ -221,8 +296,8 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 10.dp), // Add padding around the Row
-            horizontalArrangement = Arrangement.SpaceBetween, // Space elements apart
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
@@ -349,14 +424,38 @@ fun VisualizarClientesScreen(viewModel: ClienteViewModel, navController: NavCont
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish: () -> Unit) {
+fun EditarClienteScreen(
+    cliente: Cliente,
+    viewModel: ClienteViewModel,
+    onFinish: () -> Unit
+) {
     var nome by remember { mutableStateOf(cliente.nome) }
     var email by remember { mutableStateOf(cliente.email) }
     var endereco by remember { mutableStateOf(cliente.endereco) }
     var preferencias by remember { mutableStateOf(cliente.preferencias) }
-
     val resultadoMensagem = viewModel.resultadoMensagem.value
+
+    LaunchedEffect(resultadoMensagem) {
+        if (resultadoMensagem == "Cliente atualizado com sucesso!") {
+            onFinish()
+            viewModel.clearMensagem()
+        }
+    }
+
+    val isChanged = nome != cliente.nome || email != cliente.email || endereco != cliente.endereco || preferencias != cliente.preferencias
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            "Editar Cliente",
+            modifier = Modifier
+                .padding(top = 155.dp, bottom = 16.dp)
+                .align(Alignment.Center),
+            style = TextStyle(fontSize = 30.sp)
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -369,7 +468,20 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
             value = nome,
             onValueChange = { nome = it },
             label = { Text("Nome") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -378,7 +490,20 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
             value = email,
             onValueChange = { email = it },
             label = { Text("E-mail") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -387,7 +512,20 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
             value = endereco,
             onValueChange = { endereco = it },
             label = { Text("Endereço") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -396,19 +534,36 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
             value = preferencias,
             onValueChange = { preferencias = it },
             label = { Text("Preferências Alimentares") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            textStyle = TextStyle(color = Color.Black),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                viewModel.atualizarCliente(cliente.id, nome, email, endereco, preferencias)
-                if (resultadoMensagem == "Cliente atualizado com sucesso!") {
-                    onFinish() // Chama o onFinish para navegar de volta
+                if (isChanged) {
+                    viewModel.atualizarCliente(cliente.id, nome, email, endereco, preferencias)
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp, top = 10.dp)
+                .clip(CircleShape)
+                .padding(5.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
         ) {
             Text("Salvar Alterações")
         }
@@ -420,3 +575,4 @@ fun EditarClienteScreen(cliente: Cliente, viewModel: ClienteViewModel, onFinish:
         }
     }
 }
+

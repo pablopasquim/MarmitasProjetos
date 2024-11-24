@@ -16,6 +16,7 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
 
     var resultadoMensagem = mutableStateOf("") // Variável para armazenar a mensagem de resultado
 
+
     init {
         carregarClientes()
     }
@@ -85,4 +86,9 @@ class ClienteViewModel(private val clienteDao: ClienteDAO) : ViewModel() {
         }
         return cliente
     }
+
+    fun clearMensagem() {
+        resultadoMensagem.value = ""
+    }
+
 }
