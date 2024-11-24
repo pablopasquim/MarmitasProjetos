@@ -1,6 +1,6 @@
 package com.example.marmitasapp
 
-import PedidoViewModel
+import com.example.marmitasapp.ViewModel.PedidoViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -73,8 +73,6 @@ fun MarmitaNavHost(viewModel: MarmitaViewModel, pedidoViewModel: PedidoViewModel
     }
 }
 
-
-
 @Composable
 fun MarmitaMenu(navController: NavController) {
     Column(
@@ -95,7 +93,6 @@ fun MarmitaMenu(navController: NavController) {
         }
     }
 }
-
 
 @Composable
 fun CadastrarMarmitaScreen(viewModel: MarmitaViewModel, onFinish: () -> Unit) {
@@ -120,8 +117,13 @@ fun CadastrarMarmitaScreen(viewModel: MarmitaViewModel, onFinish: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            viewModel.inserirMarmita(nome, descricao, preco)
-            onFinish()
+            val precoDouble = preco.toDoubleOrNull()
+            if (precoDouble == null || nome.isBlank() || descricao.isBlank()) {
+                viewModel.resultadoMensagem.value = "Por favor, preencha todos os campos corretamente!"
+            } else {
+                viewModel.inserirMarmita(nome, descricao, precoDouble)
+                onFinish()
+            }
         }, modifier = Modifier.fillMaxWidth()) {
             Text("Salvar Marmita")
         }
@@ -129,7 +131,7 @@ fun CadastrarMarmitaScreen(viewModel: MarmitaViewModel, onFinish: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         if (resultadoMensagem.isNotBlank()) {
-            Text(text = resultadoMensagem)
+            Text(text = resultadoMensagem, color = Color.Red)
         }
     }
 }
@@ -160,13 +162,11 @@ fun VisualizarMarmitasScreen(viewModel: MarmitaViewModel, navController: NavCont
     }
 }
 
-
 @Composable
 fun FazerPedidoScreen(marmita: Marmita, viewModel: PedidoViewModel, onFinish: () -> Unit) {
-
     var clienteId by remember { mutableStateOf(1) }
     var status by remember { mutableStateOf("Pendente") }
-    var valorTotal by remember { mutableStateOf(marmita.preco) }
+    val valorTotal = remember { marmita.preco }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -175,13 +175,12 @@ fun FazerPedidoScreen(marmita: Marmita, viewModel: PedidoViewModel, onFinish: ()
     ) {
         Text("Pedido de Marmita: ${marmita.nome}", style = MaterialTheme.typography.headlineMedium)
 
-        Text("Preço: R$ ${marmita.preco}")
+        Text("Preço: R$ %.2f".format(valorTotal))
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-
-            viewModel.realizarPedido(clienteId = clienteId, marmitaId = marmita.id, valorTotal = valorTotal, status = status)
+            viewModel.realizarPedido(clienteId, marmita.id, valorTotal, status)
             if (viewModel.resultadoMensagem.value == "Pedido realizado com sucesso!") {
                 onFinish()
             }
@@ -194,4 +193,3 @@ fun FazerPedidoScreen(marmita: Marmita, viewModel: PedidoViewModel, onFinish: ()
         Text(text = viewModel.resultadoMensagem.value)
     }
 }
-
