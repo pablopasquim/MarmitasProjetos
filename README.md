@@ -10,8 +10,6 @@ Nome Gustavo Toledo - usuario github
 
 Nome William - usuario github 
 
-Nome: Breno Andrade - usuario github 
-
 
 Descrição
 O projeto Sistema de Marmitas é um aplicativo Android desenvolvido para gerenciar o cadastro e pedidos de marmitas, permitindo aos usuários cadastrar, editar e visualizar informações de clientes e marmitas. Além disso, o sistema facilita a realização de pedidos, com navegação entre telas para gerenciar tanto as marmitas quanto os clientes.
